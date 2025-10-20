@@ -11,6 +11,10 @@ interface AccountContracts {
     interface Presenter {
         fun loadAccounts()
         fun addAccount(account: Account)
+        fun updateAccountFully (updateAccount : Account)
+
+        fun updateAccountPartially (id : String, isCheked : Boolean)
+        fun deleteAccount (id : String)
     }
 
 
