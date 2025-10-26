@@ -5,36 +5,41 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.mybank.data.model.Account
 import com.example.mybank.data.model.AccountState
-import com.example.mybank.data.network.ApiClient
+import com.example.mybank.data.network.AccountsApi
+import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class AccountViewModel : ViewModel() {
+@HiltViewModel
+class AccountViewModel @Inject constructor(
+    private val accountsApi : AccountsApi
+): ViewModel() {
     private val _accounts = MutableLiveData<List<Account>>()
     val accounts: LiveData<List<Account>> = _accounts
     fun loadAccounts() {
-        ApiClient.accountsApi.getAccounts().handleAccountResponce(
+        accountsApi.getAccounts().handleAccountResponce(
             onSuccess = { _accounts.value = it })
     }
 
     fun addAccount(account: Account) {
-        ApiClient.accountsApi.addAccount(account).handleAccountResponce()
+        accountsApi.addAccount(account).handleAccountResponce()
     }
 
     fun updateAccountFully(updateAccount: Account) {
         updateAccount.id?.let {
-            ApiClient.accountsApi.updateAccountFully(it, updateAccount).handleAccountResponce()
+            accountsApi.updateAccountFully(it, updateAccount).handleAccountResponce()
         }
     }
 
     fun updateAccountPartially(id: String, isCheked: Boolean) {
-        ApiClient.accountsApi.updateAccountPartially(id, AccountState(isCheked))
+        accountsApi.updateAccountPartially(id, AccountState(isCheked))
             .handleAccountResponce()
     }
 
     fun deleteAccount(id: String) {
-        ApiClient.accountsApi.deleteAccount(id).handleAccountResponce()
+       accountsApi.deleteAccount(id).handleAccountResponce()
     }
 
     private fun <T> Call<T>.handleAccountResponce(
