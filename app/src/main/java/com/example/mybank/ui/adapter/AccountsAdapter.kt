@@ -51,7 +51,7 @@ class AccountsAdapter(
             }
             switcher.isChecked = account.isActive == true
             //== true это задаем ISActive true
-            switcher.setOnCheckedChangeListener { buttonView, isChecked ->
+            switcher.setOnCheckedChangeListener { buttoаnView, isChecked ->
                 account.id?.let {
                     onSwitchToggle(it, isChecked)
                 }

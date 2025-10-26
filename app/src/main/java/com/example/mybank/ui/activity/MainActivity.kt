@@ -3,21 +3,22 @@ package com.example.mybank.ui.activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mybank.data.model.Account
 import com.example.mybank.databinding.ActivityMainBinding
 import com.example.mybank.databinding.DialogAddBinding
-import com.example.mybank.domain.presenter.AccountContracts
-import com.example.mybank.domain.presenter.AccountPresenter
+import com.example.mybank.ui.viewModel.AccountViewModel
 import com.example.mybank.ui.adapter.AccountsAdapter
 
-class MainActivity : AppCompatActivity(), AccountContracts.View {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: AccountsAdapter
-    private lateinit var presenter: AccountPresenter
+
+    private val viewModel: AccountViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +26,17 @@ class MainActivity : AppCompatActivity(), AccountContracts.View {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initAdapter()
-        presenter = AccountPresenter(this)
+        subscribeLivedata()
         binding.btnAdd.setOnClickListener {
             showAddDialog()
+        }
+    }
+
+    private fun subscribeLivedata(){
+        viewModel.accounts.observe(this){
+            adapter.submitList(it)
+            //adapter.submitList(accountList)
+            //отображаем то что придет с презентора
         }
     }
 
@@ -41,7 +50,7 @@ class MainActivity : AppCompatActivity(), AccountContracts.View {
                         balance = etBalance.text.toString().toInt(),
                         currency = etCurrency.text.toString()
                     )
-                    presenter.addAccount(account)
+                    viewModel.addAccount(account)
 
                 }.show()
         }
@@ -49,7 +58,7 @@ class MainActivity : AppCompatActivity(), AccountContracts.View {
 
     override fun onResume() {
         super.onResume()
-        presenter.loadAccounts()
+        viewModel.loadAccounts()
     }
 
     private fun initAdapter() = with(binding) {
@@ -58,7 +67,7 @@ class MainActivity : AppCompatActivity(), AccountContracts.View {
                 showEditDialog(it)
             },
             onSwitchToggle = { id, isCheked ->
-                presenter.updateAccountPartially(id, isCheked)
+                viewModel.updateAccountPartially(id, isCheked)
             },
             onDelete = {
                 // если одно значение можно не писать id ->.
@@ -75,8 +84,8 @@ class MainActivity : AppCompatActivity(), AccountContracts.View {
         AlertDialog.Builder(this).setTitle("Вы уверены?")
             .setMessage("Удалить счет №${id}?")
             .setPositiveButton("Удалить") { _, _ ->
-                presenter.deleteAccount(id)
-            }.setNegativeButton("Отмена"){ _,_ ->
+                viewModel.deleteAccount(id)
+            }.setNegativeButton("Отмена") { _, _ ->
 
             }.show()
     }
@@ -106,7 +115,7 @@ class MainActivity : AppCompatActivity(), AccountContracts.View {
                         )
 
 
-                        presenter.updateAccountFully(updateAccount)
+                        viewModel.updateAccountFully(updateAccount)
 
                     }.show()
             }
@@ -114,8 +123,4 @@ class MainActivity : AppCompatActivity(), AccountContracts.View {
 
     }
 
-    override fun showAccounts(accountList: List<Account>) {
-        adapter.submitList(accountList)
-        //отображаем то что придет с презентора
-    }
 }

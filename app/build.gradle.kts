@@ -57,4 +57,9 @@ dependencies {
     //Material Design
     implementation("com.google.android.material:material:1.13.0")
 
+
+    //ViewModel
+    implementation("androidx.activity:activity-ktx:1.8.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 }
