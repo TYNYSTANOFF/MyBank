@@ -1,5 +1,6 @@
 package com.example.mybank.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -79,6 +80,8 @@ class MainActivity : AppCompatActivity() {
                 // если одно значение можно не писать id ->.
                 // а если больше то расписывать
                 showDeleteDialog(it)
+            },
+            onItemClick = {
 
             }
         )

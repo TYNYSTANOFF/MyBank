@@ -8,7 +8,10 @@
     tools:context=".ui.activity.AccountDetailsActivity">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:textSize="36dp"
+        android:textStyle="bold"
+        android:id="@+id/tv_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Account Info"

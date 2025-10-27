@@ -1,12 +1,16 @@
 package com.example.mybank.ui.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybank.data.model.Account
 import com.example.mybank.databinding.ItemAccountBinding
+import com.example.mybank.ui.activity.AccountDetailsActivity
 
 class AccountsAdapter(
+    private val onItemClick: (String) -> Unit,
+
     val onEdit: (Account) -> Unit,
     val onDelete: (String) -> Unit,
     val onSwitchToggle: (String, Boolean) -> Unit
@@ -54,6 +58,15 @@ class AccountsAdapter(
             switcher.setOnCheckedChangeListener { buttoаnView, isChecked ->
                 account.id?.let {
                     onSwitchToggle(it, isChecked)
+                }
+            }
+            llContainer.setOnClickListener {
+                account.id?.let { id ->
+                    onItemClick(id)
+                    val  context = it.context
+                    val intent = Intent(context, AccountDetailsActivity::class.java)
+                    intent.putExtra("account_id", id)
+                    context.startActivity(intent)
                 }
             }
         }
