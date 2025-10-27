@@ -2,6 +2,7 @@ package com.example.mybank.ui.activity
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -39,6 +40,9 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(it)
             //adapter.submitList(accountList)
             //отображаем то что придет с презентора
+        }
+        viewModel.errorMessage.observe(this){
+            Toast.makeText(this, "Проверьте подключение к интернету", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -17,7 +17,9 @@ class AccountViewModel @Inject constructor(
     private val accountsApi : AccountsApi
 ): ViewModel() {
     private val _accounts = MutableLiveData<List<Account>>()
+    private val _errorMessage = MutableLiveData<String>()
     val accounts: LiveData<List<Account>> = _accounts
+     val errorMessage : LiveData<String> = _errorMessage
     fun loadAccounts() {
         accountsApi.getAccounts().handleAccountResponce(
             onSuccess = { _accounts.value = it })
@@ -46,7 +48,7 @@ class AccountViewModel @Inject constructor(
         onSuccess: (T) -> Unit = { loadAccounts() },
         //если оставить то по умолчанию будет loadAccounts(),
         // но можно повторно вызвать и перезаписать например как onSuccess = { _accounts.value = it }
-        onError: (String) -> Unit = {}
+        onError: (String) -> Unit = { _errorMessage.postValue(it)}
     ) {
         this.enqueue(object : Callback<T> {
             override fun onResponse(call: Call<T?>, response: Response<T?>) {
