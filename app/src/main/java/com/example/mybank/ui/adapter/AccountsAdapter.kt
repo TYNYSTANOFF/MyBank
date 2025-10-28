@@ -9,10 +9,7 @@ import com.example.mybank.databinding.ItemAccountBinding
 import com.example.mybank.ui.activity.AccountDetailsActivity
 
 class AccountsAdapter(
-    private val onItemClick: (String) -> Unit,
-
-    val onEdit: (Account) -> Unit,
-    val onDelete: (String) -> Unit,
+    private val onItemClick: (Account) -> Unit,
     val onSwitchToggle: (String, Boolean) -> Unit
 ) //передал значения стринг (id) и булеан (isActive)
     : RecyclerView.Adapter<AccountsAdapter.AccountsViewHolder>() {
@@ -45,14 +42,6 @@ class AccountsAdapter(
             tvName.text = account.name
             val text = "${account.balance} ${account.currency}"
             tvBalance.text = text
-            btnEdit.setOnClickListener {
-                onEdit(account)
-            }
-            btnDelete.setOnClickListener {
-                account.id?.let {
-                    onDelete(it)
-                }
-            }
             switcher.isChecked = account.isActive == true
             //== true это задаем ISActive true
             switcher.setOnCheckedChangeListener { buttoаnView, isChecked ->
@@ -60,13 +49,11 @@ class AccountsAdapter(
                     onSwitchToggle(it, isChecked)
                 }
             }
+
+
             llContainer.setOnClickListener {
-                account.id?.let { id ->
-                    onItemClick(id)
-                    val  context = it.context
-                    val intent = Intent(context, AccountDetailsActivity::class.java)
-                    intent.putExtra("account_id", id)
-                    context.startActivity(intent)
+                account.id?.let {
+                    onItemClick(account)
                 }
             }
         }

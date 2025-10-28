@@ -29,20 +29,13 @@ class AccountViewModel @Inject constructor(
         accountsApi.addAccount(account).handleAccountResponce()
     }
 
-    fun updateAccountFully(updateAccount: Account) {
-        updateAccount.id?.let {
-            accountsApi.updateAccountFully(it, updateAccount).handleAccountResponce()
-        }
-    }
-
     fun updateAccountPartially(id: String, isCheked: Boolean) {
         accountsApi.updateAccountPartially(id, AccountState(isCheked))
             .handleAccountResponce()
     }
 
-    fun deleteAccount(id: String) {
-       accountsApi.deleteAccount(id).handleAccountResponce()
-    }
+
+
 
     private fun <T> Call<T>.handleAccountResponce(
         onSuccess: (T) -> Unit = { loadAccounts() },

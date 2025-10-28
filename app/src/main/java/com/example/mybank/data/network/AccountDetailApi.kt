@@ -7,21 +7,28 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
-import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-interface AccountsApi {
-    @GET("accounts")
-    fun getAccounts(): Call<List<Account>>
+interface AccountDetailApi {
 
-    @POST("accounts")
-    fun addAccount(@Body account: Account): Call<Unit>
-
-    @PATCH("accounts/{id}")
-    fun updateAccountPartially(
+    @PUT("accounts/{id}")
+    fun updateAccountFully(
         @Path("id") id: String,
-        @Body accountState: AccountState
+        @Body updateAccount: Account
     ): Call<Unit>
+
+
+    @DELETE("accounts/{id}")
+    fun deleteAccount(
+        @Path("id") id: String
+    ): Call<Unit>
+
+    @GET("accounts/{id}")
+    fun getAccountsById(
+        @Path("id") id: String,
+        @Body account: Account
+    ): Call<Unit>
+
 
 }

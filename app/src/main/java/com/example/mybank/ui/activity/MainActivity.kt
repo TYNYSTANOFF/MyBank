@@ -29,20 +29,20 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initAdapter()
         subscribeLivedata()
+        initAdapter()
         binding.btnAdd.setOnClickListener {
             showAddDialog()
         }
     }
 
-    private fun subscribeLivedata(){
-        viewModel.accounts.observe(this){
+    private fun subscribeLivedata() {
+        viewModel.accounts.observe(this) {
             adapter.submitList(it)
             //adapter.submitList(accountList)
             //отображаем то что придет с презентора
         }
-        viewModel.errorMessage.observe(this){
+        viewModel.errorMessage.observe(this) {
             Toast.makeText(this, "Проверьте подключение к интернету", Toast.LENGTH_SHORT).show()
         }
     }
@@ -70,66 +70,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun initAdapter() = with(binding) {
         adapter = AccountsAdapter(
-            onEdit = {
-                showEditDialog(it)
-            },
             onSwitchToggle = { id, isCheked ->
                 viewModel.updateAccountPartially(id, isCheked)
             },
-            onDelete = {
-                // если одно значение можно не писать id ->.
-                // а если больше то расписывать
-                showDeleteDialog(it)
-            },
             onItemClick = {
-
+                val intent = Intent(this@MainActivity, AccountDetailsActivity::class.java)
+                intent.putExtra("account", it)
+                startActivity(intent)
             }
         )
         recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         recyclerView.adapter = adapter
     }
 
-    private fun showDeleteDialog(id: String) {
-        AlertDialog.Builder(this).setTitle("Вы уверены?")
-            .setMessage("Удалить счет №${id}?")
-            .setPositiveButton("Удалить") { _, _ ->
-                viewModel.deleteAccount(id)
-            }.setNegativeButton("Отмена") { _, _ ->
-
-            }.show()
-    }
-
-    private fun showEditDialog(account: Account) {
-        val binding = DialogAddBinding.inflate(LayoutInflater.from(this))
-        with(binding) {
-            account.run {
-                //run позволяет использовать значения account.
-                // но его отличия от apply  в том что он не возвращает его обратно.
-                // он возвращает последнее значение
-
-                etName.setText(name)
-                etBalance.setText(balance.toString())
-                etCurrency.setText(currency)
-
-
-                AlertDialog.Builder(this@MainActivity).setTitle("Изменение счета")
-                    .setView(binding.root).setPositiveButton("Изменить") { _, _ ->
-
-                        val updateAccount = account.copy(
-                            //он копирует модельку. все значения он меняет, а ID и isActive оставляет тот же
-
-                            name = etName.text.toString(),
-                            balance = etBalance.text.toString().toInt(),
-                            currency = etCurrency.text.toString()
-                        )
-
-
-                        viewModel.updateAccountFully(updateAccount)
-
-                    }.show()
-            }
-        }
-
-    }
 
 }
